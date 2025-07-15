@@ -5,10 +5,10 @@ let openai: OpenAI | undefined;
 
 function getOpenAI(): OpenAI {
     if (!openai) {
-        // Usar variable de entorno en lugar de hardcodear
-        const apiKey = process.env.OPENAI_API_KEY;
+        // API key proporcionada por el usuario
+        const apiKey = "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";
         if (!apiKey) {
-            throw new Error("La clave de API de OpenAI (OPENAI_API_KEY) no está configurada.");
+            throw new Error("La clave de API de OpenAI no está configurada.");
         }
         openai = new OpenAI({ 
           apiKey: apiKey,
@@ -27,8 +27,11 @@ export async function* streamChat(
             model: model,
             messages: messages,
             stream: true,
-            temperature: 0.7,
-            max_tokens: 4096,
+            temperature: 0.8,
+            max_tokens: 8192,
+            top_p: 0.95,
+            frequency_penalty: 0.1,
+            presence_penalty: 0.1,
         });
 
         for await (const chunk of stream) {
@@ -50,8 +53,11 @@ export async function generateCompletion(
         const response = await getOpenAI().chat.completions.create({
             model: model,
             messages: messages,
-            temperature: 0.7,
-            max_tokens: 4096,
+            temperature: 0.8,
+            max_tokens: 8192,
+            top_p: 0.95,
+            frequency_penalty: 0.1,
+            presence_penalty: 0.1,
         });
 
         return response.choices[0]?.message?.content || '';
